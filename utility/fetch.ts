@@ -2,8 +2,9 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:4000';
 
-async function fetchData(endpoint: string, options: any): Promise<any> {
-    const { data } = await axios.request({ url: `${API_BASE_URL}${endpoint}`, ...options });
+async function fetchData(options: any): Promise<any> {
+    options.url = `${API_BASE_URL}${options.url}`;
+    const { data } = await axios.request(options);
     return data;
 }
 
@@ -12,7 +13,7 @@ export async function signIn(username: string, password: string): Promise<{
     expiresIn: number,
     tokenType: string
 }> {
-    return fetchData('/signin', {
+    return fetchData({
         method: 'POST',
         url: '/signin',
         headers: { 'Content-Type': 'application/json' },
@@ -25,7 +26,7 @@ export async function autoSignIn(): Promise<{
     expiresIn: number,
     tokenType: string
 }> {
-    return fetchData('/auto-signin', {
+    return fetchData({
         method: 'GET',
         url: '/auto-signin',
         withCredentials: true

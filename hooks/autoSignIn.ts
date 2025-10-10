@@ -1,9 +1,10 @@
 import { useRef, useEffect } from 'react';
 import { autoSignIn } from '@/utility/fetch';
+import useLocalStorageState from 'use-local-storage-state';
 
 export function useAutoSignIn() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
+  const [_, setValue] = useLocalStorageState('isAuthenticated', { defaultValue: 'false' });
   const scheduleAutoSignIn = (expiresIn: number) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
@@ -11,9 +12,11 @@ export function useAutoSignIn() {
       try {
         const res = await autoSignIn();
         if (res?.expiresIn) {
+          setValue('true');
           scheduleAutoSignIn(res.expiresIn);
         }
       } catch (err) {
+        setValue('false');
         console.error("Auto sign-in failed:", err);
       }
     }, (expiresIn - 60) * 1000); // convert to ms

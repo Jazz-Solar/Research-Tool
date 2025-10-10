@@ -1,3 +1,4 @@
+'use client'
 import {
   Field,
   FieldDescription,
@@ -6,16 +7,25 @@ import {
   FieldSet,
 } from "@/components/ui/field"
 import { Button } from "./ui/button";
-import { signIn } from "@/utility/fetch";
-import { useMutation } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input"
-import { useState, useRef } from "react";
-import { useAutoSignIn } from "@/hooks/autoSignIn";
+import { useState } from "react";
+import { SpinnerButton } from "./ui/spinner-button";
+import { UseMutationResult } from "@tanstack/react-query";
 
-export function SignInForm() {
+export function SignInForm({
+  mutation
+}: {
+  mutation: UseMutationResult<{
+    accessToken: string;
+    expiresIn: number;
+    tokenType: string;
+  }, Error, {
+    email: string;
+    password: string;
+  }, unknown> 
+}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { scheduleAutoSignIn } = useAutoSignIn();
 
   // Validation functions
   const validateEmail = (email: string) =>
@@ -23,19 +33,6 @@ export function SignInForm() {
 
   const validatePassword = (password: string) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
-
-  const mutation = useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) => signIn(email, password),
-    onSuccess: async (data) => {
-      if (data?.expiresIn) {
-        scheduleAutoSignIn(data.expiresIn); 
-      }
-    },
-    onError: (error) => {
-      console.error("Sign-in failed:", error);
-      alert("Sign-in failed. Please check your credentials and try again.");
-    },
-  })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,9 +89,13 @@ export function SignInForm() {
             </FieldDescription>
           </Field>
         </FieldGroup>
-        <Button className="w-xs mx-auto" type="submit" disabled={mutation.isPending}>
-          {mutation.isPending ? "Signing In..." : "Sign In"}
-        </Button>
+        {
+          mutation.isPending ?
+            <SpinnerButton size="lg" loadingText="Signing In..." />
+            : <Button className="w-xs mx-auto" type="submit" size="lg">
+              Sign In
+            </Button>
+        }
       </FieldSet>
     </form>
   );
