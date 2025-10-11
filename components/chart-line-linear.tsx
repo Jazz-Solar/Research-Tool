@@ -1,7 +1,10 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import { ErrorAlert } from "./alerts/error-alert"
+import { WarningAlert } from "./alerts/warning-alert"
+import { LinearView } from "./views/linear"
+import Image from "next/image"
 
 import {
     Card,
@@ -11,39 +14,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart"
 
 export const description = "A linear line chart"
-
-const chartData = [
-    { month: "January", desktop: 186, mobile: 120, tablet: 90 },
-    { month: "February", desktop: 305, mobile: 210, tablet: 130 },
-    { month: "March", desktop: 237, mobile: 160, tablet: 100 },
-    { month: "April", desktop: 73, mobile: 90, tablet: 65 },
-    { month: "May", desktop: 209, mobile: 190, tablet: 115 },
-    { month: "June", desktop: 214, mobile: 220, tablet: 140 },
-]
-
-const chartConfig = {
-    desktop: {
-        label: "Desktop",
-        color: "var(--chart-1)",
-    },
-    mobile: {
-        label: "Mobile",
-        color: "var(--chart-2)",
-    },
-    tablet: {
-        label: "Tablet",
-        color: "var(--chart-3)",
-    },
-} satisfies ChartConfig
-
 
 export function ChartLineLinear({
     chartInput
@@ -54,57 +26,32 @@ export function ChartLineLinear({
         sysId: string;
     } | undefined
 }) {
+    console.log('Rendering ChartLineLinear with input:', chartInput);
     return (
-        <Card className="w-6xl mx-auto">
+        <Card className="w-6xl h-fit mx-auto">
             <CardHeader>
                 <CardTitle>Line Chart - Linear</CardTitle>
                 <CardDescription>January - June 2024</CardDescription>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig}>
-                    <LineChart
-                        accessibilityLayer
-                        data={chartData}
-                        margin={{
-                            left: 12,
-                            right: 12,
-                        }}
-                    >
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                            dataKey="month"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            tickFormatter={(value) => value.slice(0, 3)}
-                        />
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent hideLabel />}
-                        />
-                        <Line
-                            dataKey="desktop"
-                            type="linear"
-                            stroke="var(--chart-1)"
-                            strokeWidth={2}
-                            dot={false}
-                        />
-                        <Line
-                            dataKey="mobile"
-                            type="linear"
-                            stroke="var(--chart-2)"
-                            strokeWidth={2}
-                            dot={false}
-                        />
-                        <Line
-                            dataKey="tablet"
-                            type="linear"
-                            stroke="var(--chart-3)"
-                            strokeWidth={2}
-                            dot={false}
-                        />
-                    </LineChart>
-                </ChartContainer>
+                {
+                    chartInput === undefined ?
+                        <WarningAlert title="No Data Selected" message="Please select a date and system to view the chart." /> :
+                        chartInput.sysId === "" ?
+                            <div className="flex flex-col h-full justify-between">
+                                <WarningAlert title="System Not Selected" message="Please select a valid system to view the chart." />
+                                <Image
+                                    className="mx-auto mt-4"
+                                    src="/m-blue.png"
+                                    alt="No Data"
+                                    width={300}
+                                    height={300}
+                                    priority
+                                />
+                            </div>
+                            :
+                            <LinearView />
+                }
             </CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm">
                 <div className="flex gap-2 leading-none font-medium">

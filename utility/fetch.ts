@@ -53,7 +53,7 @@ type FetchSystemsResponse = {
     systems: System[]
 }
 
-export async function getSystems(brand:string, page:number , pageSize:number):Promise<FetchSystemsResponse>{
+export async function getSystems(brand: string, page: number, pageSize: number): Promise<FetchSystemsResponse> {
     return fetchData({
         method: 'GET',
         url: `/systems?brand=${brand}&page=${page}&pageSize=${pageSize}`,
@@ -75,7 +75,7 @@ type FetchInvertersResponse = {
     inverters: Inverter[]
 }
 
-export async function getInverterDetails(sysId: string):Promise<FetchInvertersResponse>{
+export async function getInverterDetails(sysId: string): Promise<FetchInvertersResponse> {
     return fetchData({
         method: 'GET',
         url: `/inverters/${sysId}`,
@@ -98,10 +98,47 @@ type InverterEnergyPoints = {
 export async function getInverterEnergyPoints(sysId: string, inverterId: string, params: {
     dateString: string,
     squash: boolean
-}):Promise<InverterEnergyPoints>{
-   return fetchData({
-       method: 'GET',
-       url: `/archives/${sysId}/inv/${inverterId}?dateString=${params.dateString}&squash=${params.squash}`,
-       withCredentials: true,
-   });
+}): Promise<InverterEnergyPoints> {
+    return fetchData({
+        method: 'GET',
+        url: `/archives/${sysId}/inv/${inverterId}?dateString=${params.dateString}&squash=${params.squash}`,
+        withCredentials: true,
+    });
+}
+
+export type SystemEnergyPoints = {
+    systemId: string,
+    gathered_intervals: number,
+    squashed: boolean,
+    stats: Partial<InverterEnergyPoints>[]
+}
+
+// extremely slow as each inverter needs 1 min 30 sec to fetch 1 year of data
+// can't consider parallel because of rate limiting of solar brands APIs.
+export async function getSystemEnergyPoints(sysId: string, params: {
+    dateString: string,
+    squash: boolean
+}): Promise<SystemEnergyPoints> {
+    const inverters = await getInverterDetails(sysId);
+    if (inverters.count === 0) {
+        throw new Error('No inverters found for this system');
+    }
+    const energyPoints = {
+        systemId: sysId,
+        gathered_intervals: 0,
+        squashed: params.squash,
+        stats: [] as Partial<InverterEnergyPoints>[]
+    }
+    // sequentially fetch energy points for each inverter 
+    // may take a max time of inverter count * 1 min 30 sec for 1 year data
+    for (const inverter of inverters.inverters) {
+        const points = await getInverterEnergyPoints(sysId, inverter.id, params);
+        energyPoints.stats.push({
+            inverterId: inverter.id,
+            gathered_intervals: points.gathered_intervals,
+            stats: points.stats
+        });
+        energyPoints.gathered_intervals += points.gathered_intervals;
+    }
+    return energyPoints;
 }

@@ -4,7 +4,7 @@ import { SelectDemo } from "./select-demo";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "./ui/input";
 import { Combobox } from "./combobox";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getSystems } from "@/utility/fetch";
 import { Spinner } from "./ui/spinner";
@@ -35,11 +35,6 @@ export function LineChartForm({
         queryFn: async () => getSystems(systemParams.brand, systemParams.page, systemParams.pageSize),
         staleTime: 5 * 60 * 1000, // 5 minutes
     })
-
-    useEffect(() => {
-        console.log('new input: ', chartInput);
-    }, [chartInput])
-
     return <form className="w-sm h-fit bg-accent p-5 rounded-lg">
         <FieldSet>
             <h3 className="text-md font-semibold text-center">Controls</h3>
