@@ -32,3 +32,33 @@ export async function autoSignIn(): Promise<{
         withCredentials: true
     });
 }
+
+type System = {
+    id: string,
+    name: string,
+    timeZone: string,
+    fetchedAt: number,
+    address: {
+        city: string,
+        state: string,
+        country: string,
+        zipCode: string
+    }[]
+}
+
+type FetchSystemsResponse = {
+    total: number,
+    page: number,
+    pageSize: number,
+    systems: System[]
+}
+
+export async function getSystems(brand:string, page:number , pageSize:number):Promise<FetchSystemsResponse>{
+    return fetchData({
+        method: 'GET',
+        url: `/systems?brand=${brand}&page=${page}&pageSize=${pageSize}`,
+        withCredentials: true,
+    });
+}
+
+

@@ -2,11 +2,9 @@
 
 import * as React from "react"
 import { CalendarIcon } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Popover,
   PopoverContent,
@@ -17,12 +15,12 @@ function formatDate(date: Date | undefined) {
   if (!date) {
     return ""
   }
-
-  return date.toLocaleDateString("en-US", {
+  const fmtDate = date.toLocaleDateString("en-US", {
     day: "2-digit",
-    month: "long",
+    month: "2-digit",
     year: "numeric",
-  })
+  }).split('/')
+  return `${fmtDate[2]}-${fmtDate[0]}-${fmtDate[1]}`
 }
 
 function isValidDate(date: Date | undefined) {
@@ -32,13 +30,32 @@ function isValidDate(date: Date | undefined) {
   return !isNaN(date.getTime())
 }
 
-export function Calendar28() {
+export function Calendar28({
+  defaultValue,
+  setChartInput
+}: {
+  defaultValue: string
+  setChartInput: React.Dispatch<React.SetStateAction<{
+    dateString: string;
+    squash: boolean;
+    sysId: string;
+  } | undefined>>
+}) {
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState<Date | undefined>(
-    new Date("2025-06-01")
+    new Date(defaultValue)
   )
   const [month, setMonth] = React.useState<Date | undefined>(date)
   const [value, setValue] = React.useState(formatDate(date))
+
+  React.useEffect(() => {
+    setChartInput(prev => {
+      return {
+        ...prev!,
+        dateString: value
+      }
+    })
+  }, [value])
 
   return (
     <div className="flex flex-col gap-3">

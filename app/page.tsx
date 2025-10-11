@@ -13,22 +13,22 @@ let revalidated = false;
 export default function Home() {
   // logic for auto sign-in
   const { scheduleAutoSignIn } = useAutoSignIn();
-  const [value, setValue] = useLocalStorageState('isAuthenticated', { defaultValue: 'false' });
+  const [value, setValue] = useLocalStorageState('isAuthenticated', { defaultValue: false });
   const autoSignInMutation = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) => signIn(email, password),
     onSuccess: async (data) => {
-      setValue('true');
+      setValue(true);
       if (data?.expiresIn) {
         scheduleAutoSignIn(data.expiresIn);
       }
     },
     onError: (error) => {
-      setValue('false');
+      setValue(false);
       console.error("Sign-in failed:", error);
       alert("Sign-in failed. Please check your credentials and try again.");
     },
   })
-  if (value === 'true' && !revalidated) {
+  if (value && !revalidated) {
     console.log('revalidating to be sure if actually signed in.');
     revalidated = true;
     scheduleAutoSignIn(300);
@@ -43,7 +43,7 @@ export default function Home() {
     <div className="flex dark p-10 min-h-screen max-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <ChartLineLinear chartInputState={chartInputState} />
       {
-        autoSignInMutation.isSuccess || value === 'true' ?
+        autoSignInMutation.isSuccess || revalidated ?
           <LineChartForm chartInputState={chartInputState} />
           :
           <SignInForm mutation={autoSignInMutation} />

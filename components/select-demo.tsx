@@ -1,4 +1,3 @@
-
 import * as React from "react"
 
 import {
@@ -12,12 +11,15 @@ import {
 } from "@/components/ui/select"
 
 export function SelectDemo(props: {
-    placeholder?: string
-    label?: string
-    values?: string[]
+    id?: string
+    placeholder: string
+    label: string
+    values: string[],
+    defaultValue?: string
+    onValueChange?: (value: string) => void
 }) {
   return (
-    <Select>
+    <Select defaultValue={props.defaultValue} onValueChange={props.onValueChange}>
       <SelectTrigger className="w-xs">
         <SelectValue placeholder={props.placeholder} />
       </SelectTrigger>
@@ -25,7 +27,7 @@ export function SelectDemo(props: {
         <SelectGroup>
           <SelectLabel>{props.label}</SelectLabel>
           {props.values?.map((value) => (
-            <SelectItem key={value} value={value}>
+            <SelectItem id={props.id} key={value} value={value} >
               {value}
             </SelectItem>
           ))}
