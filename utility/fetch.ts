@@ -61,4 +61,47 @@ export async function getSystems(brand:string, page:number , pageSize:number):Pr
     });
 }
 
+type Inverter = {
+    id: string,
+    name: string,
+    model: string,
+    serialNumber: string,
+    mppTrackerCount: number,
+    isActive: boolean
+}
 
+type FetchInvertersResponse = {
+    count: number,
+    inverters: Inverter[]
+}
+
+export async function getInverterDetails(sysId: string):Promise<FetchInvertersResponse>{
+    return fetchData({
+        method: 'GET',
+        url: `/inverters/${sysId}`,
+        withCredentials: true,
+    });
+}
+
+type EnergyDataPoint = {
+    logTime: string,
+    energy_produced: number
+}
+
+type InverterEnergyPoints = {
+    systemId: string,
+    inverterId: string,
+    gathered_intervals: number,
+    stats: EnergyDataPoint[]
+}
+
+export async function getInverterEnergyPoints(sysId: string, inverterId: string, params: {
+    dateString: string,
+    squash: boolean
+}):Promise<InverterEnergyPoints>{
+   return fetchData({
+       method: 'GET',
+       url: `/archives/${sysId}/inv/${inverterId}?dateString=${params.dateString}&squash=${params.squash}`,
+       withCredentials: true,
+   });
+}

@@ -41,7 +41,7 @@ export default function Home() {
   }>()
   return (
     <div className="flex dark p-10 min-h-screen max-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <ChartLineLinear chartInputState={chartInputState} />
+      <ChartLineLinear chartInput={chartInputState[0]} />
       {
         autoSignInMutation.isSuccess || revalidated ?
           <LineChartForm chartInputState={chartInputState} />

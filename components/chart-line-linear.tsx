@@ -17,7 +17,6 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart"
-import { Dispatch, SetStateAction } from "react"
 
 export const description = "A linear line chart"
 
@@ -47,19 +46,14 @@ const chartConfig = {
 
 
 export function ChartLineLinear({
-    chartInputState
-}:{
-    chartInputState: [{
+    chartInput
+}: {
+    chartInput: {
         dateString: string;
         squash: boolean;
         sysId: string;
-    } | undefined, Dispatch<SetStateAction<{
-        dateString: string;
-        squash: boolean;
-        sysId: string;
-    } | undefined >>]
+    } | undefined
 }) {
-    const [chartInput, setChartInput] = chartInputState;
     return (
         <Card className="w-6xl mx-auto">
             <CardHeader>

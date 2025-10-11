@@ -8,9 +8,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getSystems } from "@/utility/fetch";
 import { Spinner } from "./ui/spinner";
-
-// get today's date in yyyy-mm-dd format
-const today = new Date().toISOString().split("T")[0];
+import { today, filteredDateString } from "./lib";
 
 export function LineChartForm({
     chartInputState
@@ -26,6 +24,7 @@ export function LineChartForm({
     } | undefined>>]
 }) {
     const [chartInput, setChartInput] = chartInputState;
+    const [filter, setFilter] = useState<'day' | 'month' | 'year'>('day');
     const [systemParams, setSystemParams] = useState({
         brand: "fronius",
         page: 1,
@@ -47,7 +46,7 @@ export function LineChartForm({
             <FieldGroup className="flex-row gap-2">
                 <Field>
                     <FieldLabel>Date Picker</FieldLabel>
-                    <Calendar28 defaultValue={today} setChartInput={setChartInput} />
+                    <Calendar28 defaultValue={today} setChartInput={setChartInput} filter={filter} />
                 </Field>
                 <Field>
                     <FieldLabel>Filter</FieldLabel>
@@ -56,19 +55,22 @@ export function LineChartForm({
                         label="Filter Options"
                         values={["day", "month", "year"]}
                         defaultValue="day"
-                        onValueChange={(value) => setChartInput({ ...chartInput!, dateString:(()=>{
-                            let newDateString = chartInput?.dateString || today;
-                            // if month then yyyy-mm else if year then yyyy
-                            if(value === "month") return newDateString.slice(0,7);
-                            else if(value === "year") return newDateString.slice(0,4);
-                            else return newDateString;
-                        })()})}
+                        onValueChange={(value) => {
+                            setFilter(value as 'day' | 'month' | 'year');
+                            setChartInput({
+                                ...chartInput!, 
+                                dateString: filteredDateString(
+                                    chartInput?.dateString, 
+                                    value as 'day' | 'month' | 'year'
+                                )
+                            })
+                        }}
                     />
                 </Field>
                 <Field className="w-14 justify-center items-end">
                     <FieldLabel>Squash</FieldLabel>
                     <div className="flex justify-center">
-                        <Checkbox onCheckedChange={(e)=>{
+                        <Checkbox onCheckedChange={(e) => {
                             setChartInput(prev => ({
                                 ...prev!,
                                 squash: e === true
@@ -94,9 +96,9 @@ export function LineChartForm({
                         id="page"
                         type="number"
                         defaultValue={1}
-                        onChange={(e) => setSystemParams({ 
-                            ...systemParams, 
-                            page: Math.max(1,Number(e.target.value)) 
+                        onChange={(e) => setSystemParams({
+                            ...systemParams,
+                            page: Math.max(1, Number(e.target.value))
                         })}
                     />
                 </Field>
@@ -106,9 +108,9 @@ export function LineChartForm({
                         id="pageSize"
                         type="number"
                         defaultValue={10}
-                        onChange={(e) => setSystemParams({ 
-                            ...systemParams, 
-                            pageSize: Math.max(1,Math.min(20,Number(e.target.value))) 
+                        onChange={(e) => setSystemParams({
+                            ...systemParams,
+                            pageSize: Math.max(1, Math.min(20, Number(e.target.value)))
                         })}
                     />
                 </Field>
@@ -120,7 +122,7 @@ export function LineChartForm({
                         <Spinner className="mx-auto" />
                         :
                         <Combobox
-                            systems={data? data.systems.map(system => ({ id: system.id, name: system.name })) : []}
+                            systems={data ? data.systems.map(system => ({ id: system.id, name: system.name })) : []}
                             setChartInput={setChartInput}
                         />
                 }

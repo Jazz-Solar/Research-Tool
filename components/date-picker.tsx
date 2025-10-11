@@ -5,6 +5,7 @@ import { CalendarIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
+import { filteredDateString } from "./lib"
 import {
   Popover,
   PopoverContent,
@@ -32,7 +33,8 @@ function isValidDate(date: Date | undefined) {
 
 export function Calendar28({
   defaultValue,
-  setChartInput
+  setChartInput,
+  filter
 }: {
   defaultValue: string
   setChartInput: React.Dispatch<React.SetStateAction<{
@@ -40,6 +42,7 @@ export function Calendar28({
     squash: boolean;
     sysId: string;
   } | undefined>>
+  filter: 'day' | 'month' | 'year'
 }) {
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState<Date | undefined>(
@@ -52,7 +55,7 @@ export function Calendar28({
     setChartInput(prev => {
       return {
         ...prev!,
-        dateString: value
+        dateString: filteredDateString(value, filter)
       }
     })
   }, [value])
