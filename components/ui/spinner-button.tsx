@@ -1,9 +1,17 @@
-import { Button } from "@/components/ui/button"
-import { Spinner } from "@/components/ui/spinner"
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 export function SpinnerButton(props: {
-    size?: "sm" | "lg" | "default" | "icon" | "icon-sm" | "icon-lg" | null | undefined,
-    loadingText?: string
+  size?:
+    | "sm"
+    | "lg"
+    | "default"
+    | "icon"
+    | "icon-sm"
+    | "icon-lg"
+    | null
+    | undefined;
+  loadingText?: string;
 }) {
   return (
     <div className="flex flex-col items-center gap-4">
@@ -12,5 +20,5 @@ export function SpinnerButton(props: {
         {props.loadingText || "Loading..."}
       </Button>
     </div>
-  )
+  );
 }

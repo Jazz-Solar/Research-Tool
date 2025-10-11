@@ -1,38 +1,45 @@
-'use client'
+"use client";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSet,
-} from "@/components/ui/field"
+} from "@/components/ui/field";
 import { Button } from "./ui/button";
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { SpinnerButton } from "./ui/spinner-button";
 import { UseMutationResult } from "@tanstack/react-query";
 
 export function SignInForm({
-  mutation
+  mutation,
 }: {
-  mutation: UseMutationResult<{
-    accessToken: string;
-    expiresIn: number;
-    tokenType: string;
-  }, Error, {
-    email: string;
-    password: string;
-  }, unknown> 
+  mutation: UseMutationResult<
+    {
+      accessToken: string;
+      expiresIn: number;
+      tokenType: string;
+    },
+    Error,
+    {
+      email: string;
+      password: string;
+    },
+    unknown
+  >;
 }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   // Validation functions
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const validatePassword = (password: string) =>
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+      password,
+    );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +54,9 @@ export function SignInForm({
       return;
     }
     if (!validatePassword(password)) {
-      alert("Password must be at least 8 characters, include uppercase, lowercase, number, and special character");
+      alert(
+        "Password must be at least 8 characters, include uppercase, lowercase, number, and special character",
+      );
       return;
     }
 
@@ -71,9 +80,7 @@ export function SignInForm({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <FieldDescription>
-              Inverto email address.
-            </FieldDescription>
+            <FieldDescription>Inverto email address.</FieldDescription>
           </Field>
           <Field>
             <FieldLabel htmlFor="password">Password</FieldLabel>
@@ -84,18 +91,16 @@ export function SignInForm({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <FieldDescription>
-              Inverto password.
-            </FieldDescription>
+            <FieldDescription>Inverto password.</FieldDescription>
           </Field>
         </FieldGroup>
-        {
-          mutation.isPending ?
-            <SpinnerButton size="lg" loadingText="Signing In..." />
-            : <Button className="w-xs mx-auto" type="submit" size="lg">
-              Sign In
-            </Button>
-        }
+        {mutation.isPending ? (
+          <SpinnerButton size="lg" loadingText="Signing In..." />
+        ) : (
+          <Button className="w-xs mx-auto" type="submit" size="lg">
+            Sign In
+          </Button>
+        )}
       </FieldSet>
     </form>
   );

@@ -1,64 +1,71 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { CalendarIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Input } from "@/components/ui/input"
-import { filteredDateString } from "./lib"
+import * as React from "react";
+import { CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import { filteredDateString } from "./lib";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
 function formatDate(date: Date | undefined) {
   if (!date) {
-    return ""
+    return "";
   }
-  const fmtDate = date.toLocaleDateString("en-US", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).split('/')
-  return `${fmtDate[2]}-${fmtDate[0]}-${fmtDate[1]}`
+  const fmtDate = date
+    .toLocaleDateString("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+    .split("/");
+  return `${fmtDate[2]}-${fmtDate[0]}-${fmtDate[1]}`;
 }
 
 function isValidDate(date: Date | undefined) {
   if (!date) {
-    return false
+    return false;
   }
-  return !isNaN(date.getTime())
+  return !isNaN(date.getTime());
 }
 
 export function Calendar28({
   defaultValue,
   setChartInput,
-  filter
+  filter,
 }: {
-  defaultValue: string
-  setChartInput: React.Dispatch<React.SetStateAction<{
-    dateString: string;
-    squash: boolean;
-    sysId: string;
-  } | undefined>>
-  filter: 'day' | 'month' | 'year'
+  defaultValue: string;
+  setChartInput: React.Dispatch<
+    React.SetStateAction<
+      | {
+          dateString: string;
+          squash: boolean;
+          sysId: string;
+        }
+      | undefined
+    >
+  >;
+  filter: "day" | "month" | "year";
 }) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(
-    new Date(defaultValue)
-  )
-  const [month, setMonth] = React.useState<Date | undefined>(date)
-  const [value, setValue] = React.useState(formatDate(date))
+    new Date(defaultValue),
+  );
+  const [month, setMonth] = React.useState<Date | undefined>(date);
+  const [value, setValue] = React.useState(formatDate(date));
 
   React.useEffect(() => {
-    setChartInput(prev => {
+    setChartInput((prev) => {
       return {
         ...prev!,
-        dateString: filteredDateString(value, filter)
-      }
-    })
-  }, [value])
+        dateString: filteredDateString(value, filter),
+      };
+    });
+  }, [value]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -69,17 +76,17 @@ export function Calendar28({
           placeholder="June 01, 2025"
           className="bg-background pr-10"
           onChange={(e) => {
-            const date = new Date(e.target.value)
-            setValue(e.target.value)
+            const date = new Date(e.target.value);
+            setValue(e.target.value);
             if (isValidDate(date)) {
-              setDate(date)
-              setMonth(date)
+              setDate(date);
+              setMonth(date);
             }
           }}
           onKeyDown={(e) => {
             if (e.key === "ArrowDown") {
-              e.preventDefault()
-              setOpen(true)
+              e.preventDefault();
+              setOpen(true);
             }
           }}
         />
@@ -107,14 +114,14 @@ export function Calendar28({
               month={month}
               onMonthChange={setMonth}
               onSelect={(date) => {
-                setDate(date)
-                setValue(formatDate(date))
-                setOpen(false)
+                setDate(date);
+                setValue(formatDate(date));
+                setOpen(false);
               }}
             />
           </PopoverContent>
         </Popover>
       </div>
     </div>
-  )
+  );
 }
