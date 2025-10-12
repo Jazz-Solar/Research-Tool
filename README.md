@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌿 Moose Research — Advanced Solar O&M Analytics Tool
 
-## Getting Started
+> **Empowering solar O&M technicians with deep inverter-level insights** 🚀
 
-First, run the development server:
+Moose Research is the go-to platform for **Operations & Maintenance (O&M)** professionals in the solar industry. Built for real-world field use, it delivers granular performance analytics across multi-inverter solar systems, enabling rapid detection of underperforming or faulty units.[1]
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🔧 **Backend Powered by Inverto** — a subproject of **Jazz Solar**, delivering a cross-platform, unified API for seamless integration with leading solar brands.[2][3]
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+***
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📊 Core Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 📈 Stacked Line Charts
+Visualize the **real-time and historical production** of every inverter in a system across customizable time scopes:
 
-## Learn More
+- **Day View**: Minute-by-minute or hourly performance 🕐
+- **Month View**: Daily performance trends across the month 📅
+- **Year View**: Monthly performance comparison over the year 📆
 
-To learn more about Next.js, take a look at the following resources:
+🔍 *Ideal for spotting anomalies, degradation, or inconsistent behavior across inverters of different brands.*[4][5]
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🏆 Bar Charts (Squash Mode)
+Enable **"Squash Mode"** to compress time-series data into single performance points per inverter:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Compare **daily**, **monthly**, or **yearly** totals at a glance
+- Instantly identify top and bottom performers 🥇🥈🥉
+- Supports competitive benchmarking within a system[6]
 
-## Deploy on Vercel
+***
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔌 Supported Brands
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Moose Research currently integrates with:
+
+- **Fronius** ⚡
+- **Enphase** ☀️
+
+Powered by **Inverto’s unified API**, ensuring consistent data access and normalization across brands.[2]
+
+***
+
+## 🚀 Upcoming Features
+
+### 🥦 Pie Chart: Inverter Status Overview
+Visualize system health with a color-coded pie chart:
+
+- **Red**: Faulty/Offline ❌
+- **Yellow**: Warning/Reduced Performance ⚠️
+- **Green**: Normal Operation ✅
+
+### 🔍 Individual Inverter Graphing
+Compare **single inverter deep dives** vs. **multi-inverter comparative views** — toggle between detailed and system-wide analysis.
+
+### 📉 Lightweight System Charts
+New endpoints for **system-level barcharts and line charts** that:
+
+- Reduce API load by aggregating at the system level
+- Eliminate need to derive data from multiple inverter calls
+- Enable faster rendering and smoother UX[7]
+
+***
+
+## 🌟 Support Moose Research
+
+We’re building the future of solar O&M analytics — **help us grow**! 🙌
+
+⭐ **Give us a star** on GitHub  
+📬 **Reach out** for feature requests or feedback  
+🔌 **Integrate** with your fleet today
+
+***
