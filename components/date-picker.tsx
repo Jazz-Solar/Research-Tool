@@ -65,7 +65,7 @@ export function Calendar28({
         dateString: filteredDateString(value, filter),
       };
     });
-  }, [value]);
+  }, [value, filter]);
 
   return (
     <div className="flex flex-col gap-3">

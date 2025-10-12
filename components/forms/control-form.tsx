@@ -74,13 +74,6 @@ export function ControlForm({
               defaultValue="day"
               onValueChange={(value) => {
                 setFilter(value as "day" | "month" | "year");
-                setChartInput({
-                  ...chartInput!,
-                  dateString: filteredDateString(
-                    chartInput?.dateString,
-                    value as "day" | "month" | "year",
-                  ),
-                });
               }}
             />
           </Field>

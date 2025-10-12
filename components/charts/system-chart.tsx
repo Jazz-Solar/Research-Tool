@@ -62,7 +62,6 @@ export function SystemChart({
     gcTime: decideStorageTime(chartInput?.dateString || today),
   });
   isInvalidInput = isInvalidInput || isError;
-  console.log(error);
   return (
     <Card className="w-6xl h-fit mx-auto">
       {!isInvalidInput && (
