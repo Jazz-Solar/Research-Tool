@@ -1,11 +1,8 @@
 "use client";
-
-import { TrendingUp } from "lucide-react";
 import { WarningAlert } from "../alerts/warning-alert";
 import { StackedView } from "../views/stacked";
 import Image from "next/image";
 import { today } from "../lib";
-
 import {
   Card,
   CardContent,
@@ -19,8 +16,7 @@ import { getSystemEnergyPoints, SystemEnergyPoints } from "@/utility/fetch";
 import { Spinner } from "../ui/spinner";
 import { ErrorAlert } from "../alerts/error-alert";
 import { AxiosError } from "axios";
-
-export const description = "A linear line chart";
+import { BarView } from "../views/bar";
 
 function decideStorageTime(dateString: string) {
   //if date string is in the format of YYYY-MM-DD and is today, return 5 minutes
@@ -61,6 +57,14 @@ export function SystemChart({
     staleTime: decideStorageTime(chartInput?.dateString || today),
     gcTime: decideStorageTime(chartInput?.dateString || today),
   });
+  // if dateString is not yyyy-mm-dd then make divideFactor to 1000
+  let unit = "Wh";
+  if (
+    chartInput?.dateString &&
+    !/^\d{4}-\d{2}-\d{2}$/.test(chartInput.dateString)
+  ) {
+    unit = "kWh";
+  }
   isInvalidInput = isInvalidInput || isError;
   return (
     <Card className="w-6xl h-fit mx-auto">
@@ -76,13 +80,15 @@ export function SystemChart({
             <span className="text-white">
               {(data as SystemEnergyPoints)?.stats?.length || 0}
             </span>
+            <br />
+            Energy Unit: <span className="text-white">{unit}</span>
           </CardDescription>
         </CardHeader>
       )}
       <CardContent>
         {chartInput === undefined ? (
           <WarningAlert
-            title="No Data Selected"
+            title="No Data Provided"
             message="Please select a date and system to view the chart."
           />
         ) : chartInput.sysId === "" ? (
@@ -117,8 +123,10 @@ export function SystemChart({
             title="No Data Available"
             message="No data is available for the selected system and date."
           />
+        ) : chartInput.squash ? (
+          <BarView chartData={data} unit={unit} />
         ) : (
-          <StackedView chartData={data} />
+          <StackedView chartData={data} unit={unit} />
         )}
       </CardContent>
       {!isInvalidInput && (

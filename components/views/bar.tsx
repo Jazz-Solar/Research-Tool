@@ -1,23 +1,33 @@
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  LabelList,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { ChartConfig, ChartContainer, ChartTooltip } from "../ui/chart";
 import { SystemEnergyPoints } from "@/utility/fetch";
-import { linearizeSystemEnergyPoints } from "@/utility/linearizer";
+import { linearizeSystemEnergyPointsForBarChart } from "@/utility/linearizer";
 import { useMemo } from "react";
-import { StackedTooltip } from "./stacked-tooltip";
 import { randomColorMap, yAxisFormatter } from "../lib";
+import { BarTooltip } from "./bar-tooltip";
 
-export function StackedView({
+export function BarView({
   chartData,
   unit,
 }: {
   chartData: SystemEnergyPoints;
   unit: string;
 }) {
-  const linearizedChartData = linearizeSystemEnergyPoints(chartData, unit);
+  const linearizedChartData = linearizeSystemEnergyPointsForBarChart(
+    chartData,
+    unit,
+  );
   const chartConfig = useMemo(() => {
     return chartData.stats.reduce<ChartConfig>((acc, inverter, i) => {
       if (inverter.inverterId) {
-        acc[inverter.inverterId] = {
+        acc.energyProduced = {
           label: inverter.inverterId,
           color: (() => {
             while (i > randomColorMap.size - 1) {
@@ -34,51 +44,38 @@ export function StackedView({
 
   return (
     <ChartContainer config={chartConfig}>
-      <LineChart
-        className="w-full h-full"
+      <BarChart
         accessibilityLayer
         data={linearizedChartData}
         margin={{
           top: 20,
-          left: 12,
-          right: 12,
         }}
       >
         <CartesianGrid vertical={false} />
         <XAxis
-          dataKey="logTime"
+          dataKey="inverterId"
           tickLine={false}
+          tickMargin={10}
           axisLine={false}
-          tickMargin={4}
-          tickCount={48}
+          tickFormatter={(value) => value.slice(0, 3)}
         />
         <YAxis
           tickLine={false}
           axisLine={false}
           tickMargin={8}
-          tickCount={10}
+          tickCount={12}
           tickFormatter={yAxisFormatter}
         />
-        <ChartTooltip
-          cursor={true}
-          animationEasing="ease-out"
-          content={<StackedTooltip />}
-        />
-        {
-          /* Stacked lines */
-          Object.entries(chartConfig).map(([inverterId, { color, label }]) => (
-            <Line
-              key={inverterId}
-              dataKey={inverterId}
-              type="natural"
-              stroke={color}
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 6 }}
-            />
-          ))
-        }
-      </LineChart>
+        <ChartTooltip cursor={false} content={<BarTooltip />} />
+        <Bar dataKey="energyProduced" fill="blue" radius={8}>
+          <LabelList
+            position="top"
+            offset={12}
+            className="fill-foreground"
+            fontSize={12}
+          />
+        </Bar>
+      </BarChart>
     </ChartContainer>
   );
 }

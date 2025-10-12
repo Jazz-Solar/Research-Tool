@@ -4,10 +4,13 @@ type LinearData = { logTime: string; [key: string]: number | string }[];
 
 export function linearizeSystemEnergyPoints(
   data: SystemEnergyPoints,
+  unit: string,
 ): LinearData {
   if (!data || !data.stats) {
     return [];
   }
+  // if dateString is not yyyy-mm-dd then make divideFactor to 1000
+  let divideFactor = unit === "kWh" ? 1000 : 1;
   // Step 1: Preprocess each inverter's stats into a Map for O(1) lookups.
   // This is a linear pass over all inverter data points.
   const inverterDataMaps = data.stats
@@ -17,7 +20,11 @@ export function linearizeSystemEnergyPoints(
 
       const timeMap = new Map<string, number>();
       inverter.stats?.forEach((point) => {
-        timeMap.set(point.logTime, point.energy_produced);
+        // convert to kWh
+        timeMap.set(
+          point.logTime,
+          Math.round(point.energy_produced / divideFactor) || 0,
+        );
       });
       return { inverterId, timeMap };
     })
@@ -47,4 +54,35 @@ export function linearizeSystemEnergyPoints(
   });
 
   return linearizedData as LinearData;
+}
+
+export type LinearizedBarData = {
+  inverterId: string;
+  energyProduced: number;
+}[];
+
+// linearize SystemEnergyPoints to for BarChart as for each inverter you will get only one data point
+// so x axis will be inverter ids and y axis will be energy produced
+export function linearizeSystemEnergyPointsForBarChart(
+  data: SystemEnergyPoints,
+  unit: string,
+): LinearizedBarData {
+  if (!data || !data.stats) {
+    return [];
+  }
+  // if dateString is not yyyy-mm-dd then make divideFactor to 1000
+  let divideFactor = unit === "kWh" ? 1000 : 1;
+  return data.stats.map((inverter) => {
+    const inverterId = inverter.inverterId || "unknown";
+    const totalEnergy = inverter.stats?.reduce(
+      // sum energy produced in kWh
+      (sum, point) =>
+        sum + (Math.round(point.energy_produced / divideFactor) || 0),
+      0,
+    );
+    return {
+      inverterId,
+      energyProduced: totalEnergy || 0,
+    };
+  });
 }

@@ -8,7 +8,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getSystems } from "@/utility/fetch";
 import { Spinner } from "../ui/spinner";
-import { today, filteredDateString } from "../lib";
+import { today } from "../lib";
 
 export function ControlForm({
   chartInputState,
@@ -34,7 +34,7 @@ export function ControlForm({
     >,
   ];
 }) {
-  const [chartInput, setChartInput] = chartInputState;
+  const [_, setChartInput] = chartInputState;
   const [filter, setFilter] = useState<"day" | "month" | "year">("day");
   const [systemParams, setSystemParams] = useState({
     brand: "fronius",
@@ -50,7 +50,7 @@ export function ControlForm({
     ],
     queryFn: async () =>
       getSystems(systemParams.brand, systemParams.page, systemParams.pageSize),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 25 * 60 * 1000,
   });
   return (
     <form className="w-sm h-fit bg-accent p-5 rounded-lg">

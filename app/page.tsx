@@ -32,7 +32,6 @@ export default function Home() {
     },
   });
   if (value && !revalidated) {
-    console.log("revalidating to be sure if actually signed in.");
     revalidated = true;
     scheduleAutoSignIn(300);
   }
