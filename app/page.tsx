@@ -1,7 +1,7 @@
 "use client";
-import { SystemChart } from "@/components/system-chart";
-import { SignInForm } from "@/components/signin-form";
-import { ControlForm } from "@/components/control-form";
+import { SystemChart } from "@/components/charts/system-chart";
+import { SignInForm } from "@/components/forms/signin-form";
+import { ControlForm } from "@/components/forms/control-form";
 import { useMutation } from "@tanstack/react-query";
 import { useAutoSignIn } from "@/hooks/autoSignIn";
 import { signIn } from "@/utility/fetch";

@@ -146,8 +146,21 @@ export async function getSystemEnergyPoints(
   };
   // sequentially fetch energy points for each inverter
   // may take a max time of inverter count * 1 min 30 sec for 1 year data
+  const brand = sysId.split(":")[0] === "f" ? "fronius" : "enphase";
   for (const inverter of inverters.inverters) {
-    const points = await getInverterEnergyPoints(sysId, inverter.id, params);
+    const points = await getInverterEnergyPoints(
+      sysId,
+      brand === "enphase" ? inverter.serialNumber : inverter.id,
+      params,
+    ).catch((err) => {
+      console.error(`Failed to fetch data for inverter ${inverter.id}:`, err);
+      return {
+        systemId: sysId,
+        inverterId: inverter.id,
+        gathered_intervals: 0,
+        stats: [],
+      };
+    });
     energyPoints.stats.push({
       inverterId: inverter.id,
       gathered_intervals: points.gathered_intervals,

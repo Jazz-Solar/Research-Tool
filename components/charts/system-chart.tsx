@@ -1,10 +1,10 @@
 "use client";
 
 import { TrendingUp } from "lucide-react";
-import { WarningAlert } from "./alerts/warning-alert";
-import { StackedView } from "./views/stacked";
+import { WarningAlert } from "../alerts/warning-alert";
+import { StackedView } from "../views/stacked";
 import Image from "next/image";
-import { today } from "./lib";
+import { today } from "../lib";
 
 import {
   Card,
@@ -15,9 +15,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useQuery, skipToken } from "@tanstack/react-query";
-import { getSystemEnergyPoints } from "@/utility/fetch";
-import { Spinner } from "./ui/spinner";
-import { ErrorAlert } from "./alerts/error-alert";
+import { getSystemEnergyPoints, SystemEnergyPoints } from "@/utility/fetch";
+import { Spinner } from "../ui/spinner";
+import { ErrorAlert } from "../alerts/error-alert";
+import { AxiosError } from "axios";
 
 export const description = "A linear line chart";
 
@@ -34,13 +35,14 @@ export function SystemChart({
   chartInput,
 }: {
   chartInput:
-  | {
-    dateString: string;
-    squash: boolean;
-    sysId: string;
-  }
-  | undefined;
+    | {
+        dateString: string;
+        squash: boolean;
+        sysId: string;
+      }
+    | undefined;
 }) {
+  console.log("Rendering ChartLineLinear with input:", chartInput);
   let isInvalidInput = !chartInput || !chartInput.sysId;
   const { isPending, error, data, isError } = useQuery({
     queryKey: [
@@ -49,19 +51,18 @@ export function SystemChart({
       chartInput?.sysId,
       chartInput?.squash || false,
     ],
-    queryFn: async () => (
-      !isInvalidInput ?
-        getSystemEnergyPoints(chartInput!.sysId, {
-          dateString: chartInput!.dateString,
-          squash: chartInput!.squash || false,
-        }) :
-        skipToken
-    ),
+    queryFn: async () =>
+      !isInvalidInput
+        ? getSystemEnergyPoints(chartInput!.sysId, {
+            dateString: chartInput!.dateString,
+            squash: chartInput!.squash || false,
+          })
+        : skipToken,
     staleTime: decideStorageTime(chartInput?.dateString || today),
     gcTime: decideStorageTime(chartInput?.dateString || today),
   });
   isInvalidInput = isInvalidInput || isError;
-  console.log("Rendering ChartLineLinear with input:", chartInput, data);
+  console.log(error);
   return (
     <Card className="w-6xl h-fit mx-auto">
       {!isInvalidInput && (
@@ -71,6 +72,11 @@ export function SystemChart({
             System Id: <span className="text-white">{chartInput?.sysId}</span>
             <br />
             Span: <span className="text-white">{chartInput?.dateString}</span>
+            <br />
+            Total Inverters:{" "}
+            <span className="text-white">
+              {(data as SystemEnergyPoints)?.stats?.length || 0}
+            </span>
           </CardDescription>
         </CardHeader>
       )}
@@ -101,27 +107,29 @@ export function SystemChart({
           </div>
         ) : error ? (
           <ErrorAlert
-            status={error.cause as number}
+            status={((error as AxiosError)?.response?.status as number) || 500}
             title={error.name}
             message={error.message}
           />
-        ) : data === undefined || data === skipToken || data.stats.length === 0 ? (
+        ) : data === undefined ||
+          data === skipToken ||
+          data.stats.length === 0 ? (
           <WarningAlert
             title="No Data Available"
             message="No data is available for the selected system and date."
           />
         ) : (
-          <StackedView chartDataOriginal={data} />
+          <StackedView chartData={data} />
         )}
       </CardContent>
       {!isInvalidInput && (
         <CardFooter className="flex-col items-start gap-2 text-sm">
-          <div className="flex gap-2 leading-none font-medium">
+          {/* <div className="flex gap-2 leading-none font-medium">
             Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
           </div>
           <div className="text-muted-foreground leading-none">
             Showing total visitors for the last 6 months
-          </div>
+          </div> */}
         </CardFooter>
       )}
     </Card>

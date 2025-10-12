@@ -6,10 +6,10 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { SpinnerButton } from "./ui/spinner-button";
+import { SpinnerButton } from "../ui/spinner-button";
 import { UseMutationResult } from "@tanstack/react-query";
 
 export function SignInForm({
