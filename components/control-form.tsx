@@ -10,7 +10,7 @@ import { getSystems } from "@/utility/fetch";
 import { Spinner } from "./ui/spinner";
 import { today, filteredDateString } from "./lib";
 
-export function LineChartForm({
+export function ControlForm({
   chartInputState,
 }: {
   chartInputState: [
@@ -56,7 +56,7 @@ export function LineChartForm({
     <form className="w-sm h-fit bg-accent p-5 rounded-lg">
       <FieldSet>
         <h3 className="text-md font-semibold text-center">Controls</h3>
-        <FieldGroup className="flex-row gap-2">
+        <FieldGroup className="flex-row gap-3">
           <Field>
             <FieldLabel>Date Picker</FieldLabel>
             <Calendar28

@@ -121,7 +121,6 @@ export async function getInverterEnergyPoints(
 
 export type SystemEnergyPoints = {
   systemId: string;
-  gathered_intervals: number;
   squashed: boolean;
   stats: Partial<InverterEnergyPoints>[];
 };

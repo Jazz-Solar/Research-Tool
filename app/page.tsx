@@ -1,7 +1,7 @@
 "use client";
-import { ChartLineLinear } from "@/components/chart-line-linear";
+import { SystemChart } from "@/components/system-chart";
 import { SignInForm } from "@/components/signin-form";
-import { LineChartForm } from "@/components/linechart-form";
+import { ControlForm } from "@/components/control-form";
 import { useMutation } from "@tanstack/react-query";
 import { useAutoSignIn } from "@/hooks/autoSignIn";
 import { signIn } from "@/utility/fetch";
@@ -44,9 +44,9 @@ export default function Home() {
   }>();
   return (
     <div className="flex dark p-10 min-h-screen max-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <ChartLineLinear chartInput={chartInputState[0]} />
+      <SystemChart chartInput={chartInputState[0]} />
       {autoSignInMutation.isSuccess || revalidated ? (
-        <LineChartForm chartInputState={chartInputState} />
+        <ControlForm chartInputState={chartInputState} />
       ) : (
         <SignInForm mutation={autoSignInMutation} />
       )}
