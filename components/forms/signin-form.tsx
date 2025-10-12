@@ -66,7 +66,7 @@ export function SignInForm({
 
   return (
     <form
-      className="w-sm h-fit bg-accent p-5 rounded-lg"
+      className="w-sm h-fit bg-accent p-3 rounded-lg"
       onSubmit={handleSubmit}
     >
       <FieldSet>

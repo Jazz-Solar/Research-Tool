@@ -53,10 +53,10 @@ export function ControlForm({
     staleTime: 25 * 60 * 1000,
   });
   return (
-    <form className="w-sm h-fit bg-accent p-5 rounded-lg">
+    <form className="w-sm h-fit bg-accent p-3 rounded-lg">
       <FieldSet>
         <h3 className="text-md font-semibold text-center">Controls</h3>
-        <FieldGroup className="flex-row gap-3">
+        <FieldGroup className="flex-row gap-2">
           <Field>
             <FieldLabel>Date Picker</FieldLabel>
             <Calendar28

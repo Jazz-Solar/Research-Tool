@@ -67,7 +67,7 @@ export function SystemChart({
   }
   isInvalidInput = isInvalidInput || isError;
   return (
-    <Card className="w-6xl h-fit mx-auto">
+    <Card className="w-[75vw] h-fit">
       {!isInvalidInput && (
         <CardHeader>
           <CardTitle>System Chart {`(Heavy)`} - Stacked</CardTitle>
@@ -131,12 +131,6 @@ export function SystemChart({
       </CardContent>
       {!isInvalidInput && (
         <CardFooter className="flex-col items-start gap-2 text-sm">
-          {/* <div className="flex gap-2 leading-none font-medium">
-            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-          </div>
-          <div className="text-muted-foreground leading-none">
-            Showing total visitors for the last 6 months
-          </div> */}
         </CardFooter>
       )}
     </Card>
