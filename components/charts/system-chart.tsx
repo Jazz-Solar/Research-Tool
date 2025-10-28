@@ -12,10 +12,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useQuery, skipToken } from "@tanstack/react-query";
-import { getSystemEnergyPoints, SystemEnergyPoints } from "@/utility/fetch";
+import {
+  getSystemEnergyPoints,
+  type SystemEnergyPoints,
+} from "@/utility/fetch";
 import { Spinner } from "../ui/spinner";
 import { ErrorAlert } from "../alerts/error-alert";
-import { AxiosError } from "axios";
+import type { AxiosError } from "axios";
 import { BarView } from "../views/bar";
 
 function decideStorageTime(dateString: string) {
@@ -48,10 +51,10 @@ export function SystemChart({
       chartInput?.squash || false,
     ],
     queryFn: async () =>
-      !isInvalidInput
-        ? getSystemEnergyPoints(chartInput!.sysId, {
-            dateString: chartInput!.dateString,
-            squash: chartInput!.squash || false,
+      !isInvalidInput && chartInput
+        ? getSystemEnergyPoints(chartInput.sysId, {
+            dateString: chartInput.dateString,
+            squash: chartInput.squash || false,
           })
         : skipToken,
     staleTime: decideStorageTime(chartInput?.dateString || today),
@@ -64,6 +67,8 @@ export function SystemChart({
     !/^\d{4}-\d{2}-\d{2}$/.test(chartInput.dateString)
   ) {
     unit = "kWh";
+  } else if (!chartInput?.squash) {
+    unit = "W";
   }
   isInvalidInput = isInvalidInput || isError;
   return (
@@ -81,7 +86,7 @@ export function SystemChart({
               {(data as SystemEnergyPoints)?.stats?.length || 0}
             </span>
             <br />
-            Energy Unit: <span className="text-white">{unit}</span>
+            Unit: <span className="text-white">{unit}</span>
           </CardDescription>
         </CardHeader>
       )}
@@ -130,8 +135,7 @@ export function SystemChart({
         )}
       </CardContent>
       {!isInvalidInput && (
-        <CardFooter className="flex-col items-start gap-2 text-sm">
-        </CardFooter>
+        <CardFooter className="flex-col items-start gap-2 text-sm"></CardFooter>
       )}
     </Card>
   );

@@ -44,11 +44,11 @@ export default function Home() {
   return (
     <div className="flex dark gap-4 p-5 min-h-screen max-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <SystemChart chartInput={chartInputState[0]} />
-        {autoSignInMutation.isSuccess || revalidated ? (
-          <ControlForm chartInputState={chartInputState} />
-        ) : (
-          <SignInForm mutation={autoSignInMutation} />
-        )}
+      {autoSignInMutation.isSuccess || revalidated ? (
+        <ControlForm chartInputState={chartInputState} />
+      ) : (
+        <SignInForm mutation={autoSignInMutation} />
+      )}
     </div>
   );
 }

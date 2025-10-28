@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+/** biome-ignore-all lint/suspicious/noExplicitAny: < tolltip is allowed to receive any> */
+import { useEffect, useRef } from "react";
 
 export function StackedTooltip({ active, payload, label }: any) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,14 +34,13 @@ export function StackedTooltip({ active, payload, label }: any) {
       ref={containerRef}
       className="bg-slate-800 w-fit max-h-96 overflow-y-auto mx-5 p-3 border-l-4"
       style={{ boxShadow: "0 0 5px rgba(0,0,0,0.3)" }}
-      tabIndex={0} // Makes div focusable for some browsers
     >
       <p>
         <strong>Time: </strong>
         {label}
       </p>
       <p>
-        <strong>Mean Energy: </strong>
+        <strong>Mean Value: </strong>
         {mean.toFixed(2)}
       </p>
       {payload.map((entry: any) => {
@@ -50,7 +50,7 @@ export function StackedTooltip({ active, payload, label }: any) {
             <div>
               <strong>{entry.name}</strong>
             </div>
-            <div className="text-white">Energy: {entry.value}</div>
+            <div className="text-white">Value: {entry.value}</div>
             <div className="text-white">Mean Diff: {meanDiff.toFixed(2)}</div>
           </div>
         );

@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:4000";
 
+// biome-ignore lint/suspicious/noExplicitAny: <fetch can return anything>
 async function fetchData(options: any): Promise<any> {
   options.url = `${API_BASE_URL}${options.url}`;
   const { data } = await axios.request(options);
@@ -94,6 +95,7 @@ export async function getInverterDetails(
 
 type EnergyDataPoint = {
   logTime: string;
+  power_produced?: number;
   energy_produced: number;
 };
 

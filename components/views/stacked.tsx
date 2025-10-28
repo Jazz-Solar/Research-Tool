@@ -14,6 +14,7 @@ export function StackedView({
   unit: string;
 }) {
   const linearizedChartData = linearizeSystemEnergyPoints(chartData, unit);
+  console.log("Linearized Chart Data:", linearizedChartData);
   const chartConfig = useMemo(() => {
     return chartData.stats.reduce<ChartConfig>((acc, inverter, i) => {
       if (inverter.inverterId) {
@@ -24,13 +25,16 @@ export function StackedView({
               const randomColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`;
               randomColorMap.set(i, randomColor);
             }
-            return randomColorMap.get(i)!;
+            return (
+              randomColorMap.get(i) ??
+              `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`
+            );
           })(),
         };
       }
       return acc;
     }, {});
-  }, [chartData.stats.length > randomColorMap.size]);
+  }, [chartData.stats]);
 
   return (
     <ChartContainer config={chartConfig}>
@@ -75,6 +79,7 @@ export function StackedView({
               strokeWidth={2}
               dot={false}
               activeDot={{ r: 6 }}
+              connectNulls={false}
             />
           ))
         }
